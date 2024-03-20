@@ -1,0 +1,71 @@
+Auto Improve      ,Auto
+Auto Insurance    ,Auto
+Auto Maintenance  ,Auto
+Auto Parts        ,Auto
+Auto Payment      ,Auto
+Carwash           ,Auto
+Gasoline          ,Auto
+Books             ,Education
+Courses           ,Education
+Concerts          ,Entretainment
+Events            ,Entretainment
+Games             ,Entretainment
+Movies            ,Entretainment
+Other Tickets     ,Entretainment
+Atm Fee           ,Fees
+Bank Fee          ,Fees
+Late Fee          ,Fees
+Service Fee       ,Fees
+Transfer Fee      ,Fees
+Gear              ,Fitness
+Gym               ,Fitness
+Spa               ,Fitness
+Bar               ,Food & Dining
+Coffee            ,Food & Dining
+Convinience       ,Food & Dining
+Food              ,Food & Dining
+Grocery           ,Food & Dining
+Lunch             ,Food & Dining
+Donate            ,Gifts
+Gift              ,Gifts
+Support           ,Gifts
+Furnishings       ,Home
+Home Improve      ,Home
+Home Maintenance  ,Home
+Rent              ,Home
+Dentist           ,Medical
+Doctor            ,Medical
+Eyecare           ,Medical
+Inssurance        ,Medical
+Pharmacy          ,Medical
+Prescriptions     ,Medical
+Other             ,Misc
+Rentals           ,Misc
+Shipping          ,Misc
+Year Expenses     ,Misc
+Audiobook         ,Services
+Bitwarden         ,Services
+Spotify           ,Services
+Stream            ,Services
+Clothes           ,Shopping
+Electronics       ,Shopping
+Personal          ,Shopping
+Projects          ,Shopping
+Supplies          ,Shopping
+Tools             ,Shopping
+Federal Tax       ,Tax
+Other Tax         ,Tax
+Parking           ,Transport
+Ride Share        ,Transport
+Taxi & Bus        ,Transport
+Tolls             ,Transport
+Transit Tickets   ,Transport
+Accomodation      ,Travel
+In-motion Expense ,Travel
+Transport Fare    ,Travel
+Electric          ,Utilities
+Gas               ,Utilities
+Internet          ,Utilities
+Phone             ,Utilities
+Work Expense      ,Work
+Work Expense (r)  ,Work

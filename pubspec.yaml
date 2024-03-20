@@ -1,0 +1,36 @@
+name: money_matters
+description: "Control my expenses."
+publish_to: 'none'
+version: 1.0.0
+
+environment:
+  sdk: '>=3.3.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  sqflite: ^2.0.0
+  path: ^1.9.0
+  intl: ^0.19.0
+  file_picker: ^6.2.0
+  path_provider: ^2.1.2
+  firebase_core: ^2.25.4
+  firebase_database: ^10.4.6
+  permission_handler: ^11.3.0
+  device_imei: ^0.0.4+2
+  firebase_auth: ^4.17.9
+  
+  
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+  - assets/budgets.csv
+  - assets/categories.csv
+  - assets/valid_users.json
+

@@ -1,0 +1,118 @@
+# Sensitive files that are required but are personal
+/firebase-config.json
+/firebase-config.js
+/android/app/google-services.json
+/lib/firebase_options.dart
+assets/valid_users.json
+ios/firebase_app_id_file.json
+ios/Runner/GoogleService-Info.plist
+macos/firebase_app_id_file.json
+macos/Runner/GoogleService-Info.plist
+
+# Miscellaneous
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.buildlog/
+.history
+.svn/
+migrate_working_dir/
+
+# IntelliJ related
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# The .vscode folder contains launch configuration and tasks you configure in
+# VS Code which you may wish to be included in version control, so this line
+# is commented out by default.
+.vscode/
+
+# Flutter/Dart/Pub related
+**/doc/api/
+**/ios/Flutter/.last_build_id
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+/build/
+
+# Symbolication related
+app.*.symbols
+
+# Obfuscation related
+app.*.map.json
+
+# Android Studio will place build artifacts here
+/android/app/debug
+/android/app/profile
+/android/app/release
+
+
+# Flutter specific
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.build/
+.packages
+.pub/
+/build/
+/captures/
+/generated/
+/macos/Flutter/
+/android/.gradle/
+/android/app/.flutter-plugins
+/android/app/.flutter-plugins-dependencies
+/android/app/build/
+/ios/Pods/
+/ios/.symlinks/
+/ios/Flutter/Flutter.framework/
+/ios/Flutter/Flutter.podspec
+/web/build/
+/web/.dart_tool/
+/test/report.xml
+
+# IDE/Editor specific
+*.iml
+*.ipr
+*.iws
+*.idea/
+.vscode/
+/.idea/
+*.class
+*.log
+
+# Compiled files
+*.class
+*.jar
+*.war
+*.ear
+*.hprof
+*.min.js
+*.map.js
+*.js.map
+*.css.map
+*.json.map
+*.tgz
+*.apk
+*.app
+*.ipa
+
+# Misc
+.DS_Store
+*.temp
+*.tmp
+*.TMP
+*.tib
+*.tibx
+*.log
+*.cache
+*.out
+*.idea
+
+
