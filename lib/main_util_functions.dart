@@ -57,34 +57,41 @@ Future<void> initializeUserSignIn(String emailAddress, String password) async {
 }
 
 Future<void> copyDefaultFiles() async {
-  Directory appDocDir = await getApplicationDocumentsDirectory();
-  String appDocPath = appDocDir.path;
+  if (!kIsWeb) {
+    Directory appDocDir = await getApplicationDocumentsDirectory();
+    String appDocPath = appDocDir.path;
 
-  File budgetFile = File('$appDocPath/budgets.csv');
+    File budgetFile = File('$appDocPath/budgets.csv');
 
-  // Copy the default budgets file if it doesn't exist
-  if (!await budgetFile.exists()) {
-    ByteData budgetData = await rootBundle.load('assets/budgets.csv');
-    List<int> budgetBytes = budgetData.buffer.asUint8List();
-    await budgetFile.writeAsBytes(budgetBytes);
-  }
+    // Copy the default budgets file if it doesn't exist
+    if (!await budgetFile.exists()) {
+      ByteData budgetData = await rootBundle.load('assets/budgets.csv');
+      List<int> budgetBytes = budgetData.buffer.asUint8List();
+      await budgetFile.writeAsBytes(budgetBytes);
+    }
 
-  // Copy the default categories file if it doesn't exist
-  File categoriesFile = File('$appDocPath/categories.csv');
-  if (!await categoriesFile.exists()) {
-    ByteData categoriesData = await rootBundle.load('assets/categories.csv');
-    List<int> categoriesBytes = categoriesData.buffer.asUint8List();
-    await categoriesFile.writeAsBytes(categoriesBytes);
+    // Copy the default categories file if it doesn't exist
+    File categoriesFile = File('$appDocPath/categories.csv');
+    if (!await categoriesFile.exists()) {
+      ByteData categoriesData = await rootBundle.load('assets/categories.csv');
+      List<int> categoriesBytes = categoriesData.buffer.asUint8List();
+      await categoriesFile.writeAsBytes(categoriesBytes);
+    }
   }
 }
 
 Future<List<String>> parseBudgetsCSV() async {
   List<String> budgets = [];
   try {
-    // Read the "budgets.csv" file from the app's local storage
-    String appDocPath = (await getApplicationDocumentsDirectory()).path;
-    File file = File('$appDocPath/budgets.csv');
-    String contents = await file.readAsString();
+    String contents = '';
+
+    if (!kIsWeb) {
+      String appDocPath = (await getApplicationDocumentsDirectory()).path;
+      File file = File('$appDocPath/budgets.csv');
+      contents = await file.readAsString();
+    } else {
+      contents = await rootBundle.loadString('assets/budgets.csv');
+    }
 
     // Split the contents by line and add each entry to the list
     budgets = contents.split('\n').map((e) => e.trim()).toList();
@@ -92,7 +99,6 @@ Future<List<String>> parseBudgetsCSV() async {
     // Add an empty string at the beginning of the list
     budgets.insert(0, 'NaN');
   } catch (e) {
-    // Handle errors, such as file not found
     if (kDebugMode) {
       print('Error parsing budgets.csv: $e');
     }
@@ -103,10 +109,15 @@ Future<List<String>> parseBudgetsCSV() async {
 Future<Map<String, List<String>>> parseCategoriesCSV() async {
   Map<String, List<String>> categoryMap = {};
   try {
-    // Read the "categories.csv" file from the app's local storage
-    String appDocPath = (await getApplicationDocumentsDirectory()).path;
-    File file = File('$appDocPath/categories.csv');
-    List<String> lines = await file.readAsLines();
+    List<String> lines = [];
+
+    if (!kIsWeb) {
+      String appDocPath = (await getApplicationDocumentsDirectory()).path;
+      File file = File('$appDocPath/categories.csv');
+      lines = await file.readAsLines();
+    } else {
+      lines = await readLinesFromAsset('assets/categories.csv');
+    }
 
     // Add NaN key with an empty list
     categoryMap['NaN'] = [];
@@ -142,6 +153,11 @@ Future<Map<String, List<String>>> parseCategoriesCSV() async {
     }
   }
   return categoryMap;
+}
+
+Future<List<String>> readLinesFromAsset(String assetPath) async {
+  String contents = await rootBundle.loadString(assetPath);
+  return contents.split('\n');
 }
 
 //EOF EOF EOF EOF EOF EOF EOF EOF EOF EOF EOF EOF EOF EOF EOF EOF EOF EOF EOF EOF EOF EOF EOF EOF//
