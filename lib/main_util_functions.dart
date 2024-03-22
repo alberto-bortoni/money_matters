@@ -21,6 +21,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:convert';
+//import 'dart:html' as html;
+import 'package:universal_html/html.dart' as html;
 
 //|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*
 //|* ----------------------------------------------- METHODS
@@ -77,6 +79,25 @@ Future<void> copyDefaultFiles() async {
       List<int> categoriesBytes = categoriesData.buffer.asUint8List();
       await categoriesFile.writeAsBytes(categoriesBytes);
     }
+  } else {
+    // Check if the budgets file already exists in local storage
+    String? budgetsString = html.window.localStorage['budgets'];
+    if (budgetsString == null) {
+      // If the budgets file doesn't exist, load it from assets and store it in local storage
+      ByteData budgetData = await rootBundle.load('assets/budgets.csv');
+      List<int> budgetBytes = budgetData.buffer.asUint8List();
+      String budgetString = utf8.decode(budgetBytes);
+      html.window.localStorage['budgets'] = budgetString;
+    }
+
+    // Similarly, check and store the categories file in local storage if it doesn't exist
+    String? categoriesString = html.window.localStorage['categories'];
+    if (categoriesString == null) {
+      ByteData categoriesData = await rootBundle.load('assets/categories.csv');
+      List<int> categoriesBytes = categoriesData.buffer.asUint8List();
+      String categoriesString = utf8.decode(categoriesBytes);
+      html.window.localStorage['categories'] = categoriesString;
+    }
   }
 }
 
@@ -90,7 +111,10 @@ Future<List<String>> parseBudgetsCSV() async {
       File file = File('$appDocPath/budgets.csv');
       contents = await file.readAsString();
     } else {
-      contents = await rootBundle.loadString('assets/budgets.csv');
+      String? budgetsString = html.window.localStorage['budgets'];
+      if (budgetsString != null) {
+        contents = budgetsString;
+      }
     }
 
     // Split the contents by line and add each entry to the list
@@ -116,10 +140,12 @@ Future<Map<String, List<String>>> parseCategoriesCSV() async {
       File file = File('$appDocPath/categories.csv');
       lines = await file.readAsLines();
     } else {
-      lines = await readLinesFromAsset('assets/categories.csv');
+      String? categoriesString = html.window.localStorage['categories'];
+      if (categoriesString != null) {
+        lines = categoriesString.split('\n');
+      }
     }
 
-    // Add NaN key with an empty list
     categoryMap['NaN'] = [];
 
     // Iterate over each line in the file
@@ -147,17 +173,11 @@ Future<Map<String, List<String>>> parseCategoriesCSV() async {
       }
     });
   } catch (e) {
-    // Handle errors, such as file not found
     if (kDebugMode) {
       print('Error parsing categories.csv: $e');
     }
   }
   return categoryMap;
-}
-
-Future<List<String>> readLinesFromAsset(String assetPath) async {
-  String contents = await rootBundle.loadString(assetPath);
-  return contents.split('\n');
 }
 
 //EOF EOF EOF EOF EOF EOF EOF EOF EOF EOF EOF EOF EOF EOF EOF EOF EOF EOF EOF EOF EOF EOF EOF EOF//

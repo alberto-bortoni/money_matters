@@ -62,7 +62,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Tabs Demo',
+      title: 'moneyMatters',
       theme: ThemeData(
         primarySwatch: myIvoryMaterialColor,
         colorScheme: const ColorScheme.dark(

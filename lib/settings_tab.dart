@@ -24,6 +24,8 @@ import 'package:path_provider/path_provider.dart';
 import 'myapp_styles.dart';
 import 'package:intl/intl.dart';
 import 'db_handler.dart';
+import 'package:universal_html/html.dart' as html;
+import 'dart:convert';
 
 // ********************************************************************************************* //
 // *                                     SETTINGS TAB CLASS                                    * //
@@ -39,8 +41,8 @@ class SettingsTab extends StatefulWidget {
 class _SettingsTabState extends State<SettingsTab> {
   //|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*
   //|* --------------------------------------------- VARIABLES
-  String _selectedBudgetFileName = 'budgets.csv'; // Default budget file name
-  String _selectedCategoriesFileName = 'categories.csv'; // Default categories file name
+  String _selectedBudgetFileName = 'budgets.csv';
+  String _selectedCategoriesFileName = 'categories.csv';
   String _displayText = '';
   String _downloadDir = '';
   String _appDocDir = '';
@@ -48,40 +50,52 @@ class _SettingsTabState extends State<SettingsTab> {
   //|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*
   //|* ----------------------------------------- CLASS METHODS
   Future<void> _getDownloadDir() async {
-    if (Platform.isIOS) {
-      _downloadDir = (await getDownloadsDirectory())?.path ?? '';
-    } else {
-      _downloadDir = "/storage/emulated/0/Download/";
-
-      bool dirDownloadExists = false;
-      dirDownloadExists = await Directory(_downloadDir).exists();
-      if (dirDownloadExists) {
-        _downloadDir = "/storage/emulated/0/Download/";
+    if (!kIsWeb) {
+      if (Platform.isIOS) {
+        _downloadDir = (await getDownloadsDirectory())?.path ?? '';
       } else {
-        _downloadDir = "/storage/emulated/0/Downloads/";
+        _downloadDir = "/storage/emulated/0/Download/";
+
+        bool dirDownloadExists = false;
+        dirDownloadExists = await Directory(_downloadDir).exists();
+        if (dirDownloadExists) {
+          _downloadDir = "/storage/emulated/0/Download/";
+        } else {
+          _downloadDir = "/storage/emulated/0/Downloads/";
+        }
       }
     }
   }
 
   Future<void> _getApplicationDir() async {
-    Directory appDocDir = await getApplicationDocumentsDirectory();
-    _appDocDir = appDocDir.path;
+    if (!kIsWeb) {
+      Directory appDocDir = await getApplicationDocumentsDirectory();
+      _appDocDir = appDocDir.path;
+    }
   }
 
   void _browseBudgetFile() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles();
+    FilePickerResult? result = await FilePicker.platform
+        .pickFiles(type: FileType.custom, allowedExtensions: ['csv'], allowMultiple: false);
 
     if (result != null) {
-      File selectedFile = File(result.files.single.path!);
+      File selectedFile;
 
-      // Delete existing budgets.csv file if it exists
-      File existingFile = File('$_appDocDir/budgets.csv');
-      if (await existingFile.exists()) {
-        await existingFile.delete();
+      if (!kIsWeb) {
+        selectedFile = File(result.files.single.path!);
+        
+        // Delete existing budgets.csv file if it exists
+        File existingFile = File('$_appDocDir/budgets.csv');
+        if (await existingFile.exists()) {
+          await existingFile.delete();
+        }
+
+        // Copy the selected file to app's local storage
+        await selectedFile.copy('$_appDocDir/budgets.csv');
+      } else {
+        String budgetString = utf8.decode(result.files.single.bytes!);
+        html.window.localStorage['budgets'] = budgetString;
       }
-
-      // Copy the selected file to app's local storage
-      await selectedFile.copy('$_appDocDir/budgets.csv');
 
       setState(() {
         _selectedBudgetFileName = result.files.single.name; // Update selected budget file name
@@ -90,22 +104,29 @@ class _SettingsTabState extends State<SettingsTab> {
   }
 
   void _browseCategoriesFile() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles();
-    if (result != null) {
-      File selectedFile = File(result.files.single.path!);
+    FilePickerResult? result = await FilePicker.platform
+        .pickFiles(type: FileType.custom, allowedExtensions: ['csv'], allowMultiple: false);
 
-      // Delete existing categories.csv file if it exists
-      File existingFile = File('$_appDocDir/categories.csv');
-      if (await existingFile.exists()) {
-        await existingFile.delete();
+    if (result != null) {
+      File selectedFile;
+      if (!kIsWeb) {
+        selectedFile = File(result.files.single.path!);
+
+        // Delete existing categories.csv file if it exists
+        File existingFile = File('$_appDocDir/categories.csv');
+        if (await existingFile.exists()) {
+          await existingFile.delete();
+        }
+
+        // Copy the selected file to app's local storage
+        await selectedFile.copy('$_appDocDir/categories.csv');
+      } else {
+        String budgetString = utf8.decode(result.files.single.bytes!);
+        html.window.localStorage['categories'] = budgetString;
       }
 
-      // Copy the selected file to app's local storage
-      await selectedFile.copy('$_appDocDir/categories.csv');
-
       setState(() {
-        _selectedCategoriesFileName =
-            result.files.single.name; // Update selected categories file name
+        _selectedCategoriesFileName = result.files.single.name;
       });
     }
   }
@@ -346,7 +367,7 @@ class _SettingsTabState extends State<SettingsTab> {
           ),
           const SizedBox(height: 20.0),
           ElevatedButton(
-            onPressed: () {
+            onPressed:  kIsWeb ? null : () {
               _getBudgetsFile();
               _changeText();
             },
@@ -354,7 +375,7 @@ class _SettingsTabState extends State<SettingsTab> {
           ),
           const SizedBox(height: 15.0),
           ElevatedButton(
-            onPressed: () {
+            onPressed:  kIsWeb ? null : () {
               _getCategoriesFile();
               _changeText();
             },
@@ -362,7 +383,7 @@ class _SettingsTabState extends State<SettingsTab> {
           ),
           const SizedBox(height: 15.0),
           ElevatedButton(
-            onPressed: () {
+            onPressed:  kIsWeb ? null : () {
               _getExpenseThisMonth();
               _changeText();
             },
@@ -370,7 +391,7 @@ class _SettingsTabState extends State<SettingsTab> {
           ),
           const SizedBox(height: 15.0),
           ElevatedButton(
-            onPressed: () {
+            onPressed:  kIsWeb ? null : () {
               _getExpenseLastMonth();
               _changeText();
             },
@@ -378,7 +399,7 @@ class _SettingsTabState extends State<SettingsTab> {
           ),
           const SizedBox(height: 15.0),
           ElevatedButton(
-            onPressed: () {
+            onPressed:  kIsWeb ? null : () {
               _getExpenseAll();
               _changeText();
             },
@@ -386,7 +407,7 @@ class _SettingsTabState extends State<SettingsTab> {
           ),
           const SizedBox(height: 15.0),
           ElevatedButton(
-            onPressed: () {
+            onPressed:  kIsWeb ? null : () {
               _getTransferAll();
               _changeText();
             },
