@@ -5,6 +5,9 @@ Auto Parts,Auto
 Auto Payment,Auto
 Carwash,Auto
 Gasoline,Auto
+Coffee,Eating
+Meal,Eating
+Lunch,Eating
 Books,Education
 Courses,Education
 Concerts,Entretainment
@@ -20,12 +23,9 @@ Transfer Fee,Fees
 Gear,Fitness
 Gym,Fitness
 Spa,Fitness
-Bar,Food & Dining
-Coffee,Food & Dining
-Convinience,Food & Dining
-Food,Food & Dining
-Grocery,Food & Dining
-Lunch,Food & Dining
+Convinience,Food
+Grocery,Food
+Other,Food
 Donate,Gifts
 Gift,Gifts
 Support,Gifts
@@ -43,6 +43,10 @@ Other,Misc
 Rentals,Misc
 Shipping,Misc
 Year Expenses,Misc
+Bar,Outing
+Cover/Ticket,Outing
+Restaurant,Outing
+Other,Outing
 Audiobook,Services
 Bitwarden,Services
 Spotify,Services
