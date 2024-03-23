@@ -83,7 +83,7 @@ class _SettingsTabState extends State<SettingsTab> {
 
       if (!kIsWeb) {
         selectedFile = File(result.files.single.path!);
-        
+
         // Delete existing budgets.csv file if it exists
         File existingFile = File('$_appDocDir/budgets.csv');
         if (await existingFile.exists()) {
@@ -311,109 +311,123 @@ class _SettingsTabState extends State<SettingsTab> {
   //|* ------------------------------------ OVERRIDDEN METHODS
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(height: 10.0),
-          const Text(
-            'CONFIG FILES',
-            style: myTextStyle,
-          ),
-          const SizedBox(height: 1.0),
-          const Text(
-            'Names will be re-written after app closes.',
-            style: myTextStylePlsm,
-          ),
-          const SizedBox(height: 25.0),
-          Text(
-            'Budget file: $_selectedBudgetFileName',
-            style: myTextStylePl,
-          ),
-          const SizedBox(height: 16.0),
-          ElevatedButton(
-            onPressed: _browseBudgetFile,
-            child: const Text('Browse Budgets'),
-          ),
-          const SizedBox(height: 32.0),
-          Text(
-            'Categories file: $_selectedCategoriesFileName',
-            style: myTextStylePl,
-          ),
-          const SizedBox(height: 16.0),
-          ElevatedButton(
-            onPressed: _browseCategoriesFile,
-            child: const Text('Browse Categories'),
-          ),
-          const SizedBox(height: 60.0),
-          Row(
-            children: [
-              const Expanded(
-                child: Text(
-                  'EXPORTS',
-                  style: myTextStyle,
-                  textAlign: TextAlign.left,
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 10.0),
+            const Text(
+              'CONFIG FILES',
+              style: myTextStyle,
+            ),
+            const SizedBox(height: 1.0),
+            const Text(
+              'Names will be re-written after app closes.',
+              style: myTextStylePlsm,
+            ),
+            const SizedBox(height: 25.0),
+            Text(
+              'Budget file: $_selectedBudgetFileName',
+              style: myTextStylePl,
+            ),
+            const SizedBox(height: 16.0),
+            ElevatedButton(
+              onPressed: _browseBudgetFile,
+              child: const Text('Browse Budgets'),
+            ),
+            const SizedBox(height: 32.0),
+            Text(
+              'Categories file: $_selectedCategoriesFileName',
+              style: myTextStylePl,
+            ),
+            const SizedBox(height: 16.0),
+            ElevatedButton(
+              onPressed: _browseCategoriesFile,
+              child: const Text('Browse Categories'),
+            ),
+            const SizedBox(height: 60.0),
+            Row(
+              children: [
+                const Expanded(
+                  child: Text(
+                    'EXPORTS',
+                    style: myTextStyle,
+                    textAlign: TextAlign.left,
+                  ),
                 ),
-              ),
-              Expanded(
-                child: Text(
-                  _displayText,
-                  style: myTextStylePl,
-                  textAlign: TextAlign.right,
+                Expanded(
+                  child: Text(
+                    _displayText,
+                    style: myTextStylePl,
+                    textAlign: TextAlign.right,
+                  ),
                 ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 20.0),
-          ElevatedButton(
-            onPressed:  kIsWeb ? null : () {
-              _getBudgetsFile();
-              _changeText();
-            },
-            child: const Text('File: Budgets'),
-          ),
-          const SizedBox(height: 15.0),
-          ElevatedButton(
-            onPressed:  kIsWeb ? null : () {
-              _getCategoriesFile();
-              _changeText();
-            },
-            child: const Text('File: Categories'),
-          ),
-          const SizedBox(height: 15.0),
-          ElevatedButton(
-            onPressed:  kIsWeb ? null : () {
-              _getExpenseThisMonth();
-              _changeText();
-            },
-            child: const Text('Expense: This month'),
-          ),
-          const SizedBox(height: 15.0),
-          ElevatedButton(
-            onPressed:  kIsWeb ? null : () {
-              _getExpenseLastMonth();
-              _changeText();
-            },
-            child: const Text('Expense: Last month'),
-          ),
-          const SizedBox(height: 15.0),
-          ElevatedButton(
-            onPressed:  kIsWeb ? null : () {
-              _getExpenseAll();
-              _changeText();
-            },
-            child: const Text('Expense: All entries'),
-          ),
-          const SizedBox(height: 15.0),
-          ElevatedButton(
-            onPressed:  kIsWeb ? null : () {
-              _getTransferAll();
-              _changeText();
-            },
-            child: const Text('Transactions: All entries'),
-          ),
-        ],
+              ],
+            ),
+            const SizedBox(height: 20.0),
+            ElevatedButton(
+              onPressed: kIsWeb
+                  ? null
+                  : () {
+                      _getBudgetsFile();
+                      _changeText();
+                    },
+              child: const Text('File: Budgets'),
+            ),
+            const SizedBox(height: 15.0),
+            ElevatedButton(
+              onPressed: kIsWeb
+                  ? null
+                  : () {
+                      _getCategoriesFile();
+                      _changeText();
+                    },
+              child: const Text('File: Categories'),
+            ),
+            const SizedBox(height: 15.0),
+            ElevatedButton(
+              onPressed: kIsWeb
+                  ? null
+                  : () {
+                      _getExpenseThisMonth();
+                      _changeText();
+                    },
+              child: const Text('Expense: This month'),
+            ),
+            const SizedBox(height: 15.0),
+            ElevatedButton(
+              onPressed: kIsWeb
+                  ? null
+                  : () {
+                      _getExpenseLastMonth();
+                      _changeText();
+                    },
+              child: const Text('Expense: Last month'),
+            ),
+            const SizedBox(height: 15.0),
+            ElevatedButton(
+              onPressed: kIsWeb
+                  ? null
+                  : () {
+                      _getExpenseAll();
+                      _changeText();
+                    },
+              child: const Text('Expense: All entries'),
+            ),
+            const SizedBox(height: 15.0),
+            ElevatedButton(
+              onPressed: kIsWeb
+                  ? null
+                  : () {
+                      _getTransferAll();
+                      _changeText();
+                    },
+              child: const Text('Transactions: All entries'),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -166,120 +166,122 @@ class _TransfersState extends State<TransfersTab> {
   //|* ----------------------------------------------- WIDGETS
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          const SizedBox(height: 10.0),
-          RichText(
-            text: TextSpan(
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const SizedBox(height: 10.0),
+            RichText(
+              text: TextSpan(
+                children: [
+                  const TextSpan(text: 'Date:  ', style: myTextStyle),
+                  TextSpan(text: _currentDate, style: myTextStylePl),
+                ],
+              ),
+            ),
+            const SizedBox(height: 10.0),
+            RichText(
+              text: TextSpan(
+                children: [
+                  const TextSpan(text: 'Time:  ', style: myTextStyle),
+                  TextSpan(text: _currentTime, style: myTextStylePl),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20.0),
+            TextFormField(
+              controller: _descriptionController,
+              decoration: const InputDecoration(
+                labelText: 'Transfer Description',
+                enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: myOutlineColor, width: 1.5),
+                  borderRadius: BorderRadius.zero,
+                ),
+              ),
+            ),
+            const SizedBox(height: 20.0),
+            TextFormField(
+              controller: _amountController,
+              decoration: const InputDecoration(
+                labelText: 'Amount',
+                enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: myOutlineColor, width: 1.5),
+                  borderRadius: BorderRadius.zero,
+                ),
+              ),
+              keyboardType: TextInputType.number,
+            ),
+            const SizedBox(height: 20.0),
+            DropdownButtonFormField(
+              value: _selectedFrom,
+              decoration: const InputDecoration(
+                labelText: 'From',
+                enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: myOutlineColor, width: 1.5),
+                  borderRadius: BorderRadius.zero,
+                ),
+              ),
+              items: _fromDisplay.map((String value) {
+                return DropdownMenuItem<String>(
+                  value: _fromOptions[_fromDisplay.indexOf(value)],
+                  child: Text(value),
+                );
+              }).toList(),
+              onChanged: (String? newValue) {
+                setState(() {
+                  _selectedFrom = newValue!;
+                });
+              },
+            ),
+            const SizedBox(height: 20.0),
+            DropdownButtonFormField(
+              value: _selectedTo,
+              decoration: const InputDecoration(
+                labelText: 'To',
+                enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: myOutlineColor, width: 1.5),
+                  borderRadius: BorderRadius.zero,
+                ),
+              ),
+              items: _toDisplay.map((String value) {
+                return DropdownMenuItem<String>(
+                  value: _toOptions[_toDisplay.indexOf(value)],
+                  child: Text(value),
+                );
+              }).toList(),
+              onChanged: (String? newValue) {
+                setState(() {
+                  _selectedTo = newValue!;
+                });
+              },
+            ),
+            const SizedBox(height: 30.0),
+            Text(_displayText, style: myTextStylePl, textAlign: TextAlign.center),
+            const SizedBox(height: 10.0),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const TextSpan(text: 'Date:  ', style: myTextStyle),
-                TextSpan(text: _currentDate, style: myTextStylePl),
+                ElevatedButton(
+                  onPressed: () {
+                    _recordTransaction();
+                  },
+                  style: raisedButtonStyle,
+                  child: const Text('Push', style: myButtonTextStyle),
+                ),
+                const SizedBox(width: 20.0),
+                OutlinedButton(
+                  onPressed: () {
+                    _clearForm();
+                  },
+                  style: raisedButtonStyle,
+                  child: const Text('Clear', style: myButtonTextStyle),
+                ),
               ],
             ),
-          ),
-          const SizedBox(height: 10.0),
-          RichText(
-            text: TextSpan(
-              children: [
-                const TextSpan(text: 'Time:  ', style: myTextStyle),
-                TextSpan(text: _currentTime, style: myTextStylePl),
-              ],
-            ),
-          ),
-          const SizedBox(height: 20.0),
-          TextFormField(
-            controller: _descriptionController,
-            decoration: const InputDecoration(
-              labelText: 'Transfer Description',
-              enabledBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: myOutlineColor, width: 1.5),
-                borderRadius: BorderRadius.zero,
-              ),
-            ),
-          ),
-          const SizedBox(height: 20.0),
-          TextFormField(
-            controller: _amountController,
-            decoration: const InputDecoration(
-              labelText: 'Amount',
-              enabledBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: myOutlineColor, width: 1.5),
-                borderRadius: BorderRadius.zero,
-              ),
-            ),
-            keyboardType: TextInputType.number,
-          ),
-          const SizedBox(height: 20.0),
-          DropdownButtonFormField(
-            value: _selectedFrom,
-            decoration: const InputDecoration(
-              labelText: 'From',
-              enabledBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: myOutlineColor, width: 1.5),
-                borderRadius: BorderRadius.zero,
-              ),
-            ),
-            items: _fromDisplay.map((String value) {
-              return DropdownMenuItem<String>(
-                value: _fromOptions[_fromDisplay.indexOf(value)],
-                child: Text(value),
-              );
-            }).toList(),
-            onChanged: (String? newValue) {
-              setState(() {
-                _selectedFrom = newValue!;
-              });
-            },
-          ),
-          const SizedBox(height: 20.0),
-          DropdownButtonFormField(
-            value: _selectedTo,
-            decoration: const InputDecoration(
-              labelText: 'To',
-              enabledBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: myOutlineColor, width: 1.5),
-                borderRadius: BorderRadius.zero,
-              ),
-            ),
-            items: _toDisplay.map((String value) {
-              return DropdownMenuItem<String>(
-                value: _toOptions[_toDisplay.indexOf(value)],
-                child: Text(value),
-              );
-            }).toList(),
-            onChanged: (String? newValue) {
-              setState(() {
-                _selectedTo = newValue!;
-              });
-            },
-          ),
-          const SizedBox(height: 30.0),
-          Text(_displayText, style: myTextStylePl, textAlign: TextAlign.center),
-          const SizedBox(height: 10.0),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ElevatedButton(
-                onPressed: () {
-                  _recordTransaction();
-                },
-                style: raisedButtonStyle,
-                child: const Text('Push', style: myButtonTextStyle),
-              ),
-              const SizedBox(width: 20.0),
-              OutlinedButton(
-                onPressed: () {
-                  _clearForm();
-                },
-                style: raisedButtonStyle,
-                child: const Text('Clear', style: myButtonTextStyle),
-              ),
-            ],
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
