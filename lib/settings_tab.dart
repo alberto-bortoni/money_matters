@@ -153,7 +153,7 @@ class _SettingsTabState extends State<SettingsTab> {
 
     // Open a file for writing
     String thisMonth = DateFormat('yyyyMM').format(DateTime.now());
-    File csvFile = File('$_downloadDir/expensesThisMonth-$thisMonth.csv');
+    File csvFile = File('$_downloadDir/expenses-$thisMonth.csv');
     IOSink sink = csvFile.openWrite();
 
     try {
@@ -190,7 +190,7 @@ class _SettingsTabState extends State<SettingsTab> {
     DateTime lastM = DateTime(now.year, now.month - 1);
     String lastMonth = DateFormat('yyyyMM').format(lastM);
 
-    File csvFile = File('$_downloadDir/expensesLastMonth-$lastMonth.csv');
+    File csvFile = File('$_downloadDir/expenses-$lastMonth.csv');
     IOSink sink = csvFile.openWrite();
 
     try {
@@ -287,7 +287,7 @@ class _SettingsTabState extends State<SettingsTab> {
 
   void _changeText() {
     setState(() {
-      _displayText = 'Donzo exporting!'; // Change text after button press
+      _displayText = 'Donzo exporting!';
     });
 
     // Reset text to default after 3 seconds

@@ -80,24 +80,16 @@ Future<void> copyDefaultFiles() async {
       await categoriesFile.writeAsBytes(categoriesBytes);
     }
   } else {
-    // Check if the budgets file already exists in local storage
-    String? budgetsString = html.window.localStorage['budgets'];
-    if (budgetsString == null) {
-      // If the budgets file doesn't exist, load it from assets and store it in local storage
-      ByteData budgetData = await rootBundle.load('assets/budgets.csv');
-      List<int> budgetBytes = budgetData.buffer.asUint8List();
-      String budgetString = utf8.decode(budgetBytes);
-      html.window.localStorage['budgets'] = budgetString;
-    }
+    // If the budgets file doesn't exist, load it from assets and store it in local storage
+    ByteData budgetData = await rootBundle.load('assets/budgets.csv');
+    List<int> budgetBytes = budgetData.buffer.asUint8List();
+    String budgetsString = utf8.decode(budgetBytes);
+    html.window.localStorage['budgets'] = budgetsString;
 
-    // Similarly, check and store the categories file in local storage if it doesn't exist
-    String? categoriesString = html.window.localStorage['categories'];
-    if (categoriesString == null) {
-      ByteData categoriesData = await rootBundle.load('assets/categories.csv');
-      List<int> categoriesBytes = categoriesData.buffer.asUint8List();
-      String categoriesString = utf8.decode(categoriesBytes);
-      html.window.localStorage['categories'] = categoriesString;
-    }
+    ByteData categoriesData = await rootBundle.load('assets/categories.csv');
+    List<int> categoriesBytes = categoriesData.buffer.asUint8List();
+    String categoriesString = utf8.decode(categoriesBytes);
+    html.window.localStorage['categories'] = categoriesString;
   }
 }
 

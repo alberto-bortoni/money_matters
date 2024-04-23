@@ -20,8 +20,6 @@ dependencies:
   device_imei: ^0.0.4+2
   firebase_auth: ^4.17.9
   universal_html: ^2.2.4
-  
-  
 
 dev_dependencies:
   flutter_test:

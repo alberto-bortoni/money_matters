@@ -20,6 +20,7 @@ import 'package:intl/intl.dart';
 import 'db_handler.dart';
 import 'main_util_functions.dart';
 import 'myapp_styles.dart';
+import 'dart:async';
 
 // ********************************************************************************************* //
 // *                                      HOME TAB CLASS                                       * //
@@ -35,8 +36,9 @@ class HomeTab extends StatefulWidget {
 class _HomeTabState extends State<HomeTab> {
   //|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*
   //|* --------------------------------------------- VARIABLES
-  final String _currentDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
-  final String _currentTime = DateFormat('HH:mm').format(DateTime.now());
+  late String _currentDate;
+  late String _currentTime;
+  late Timer _timer;
 
   final _descriptionController = TextEditingController();
 
@@ -61,6 +63,12 @@ class _HomeTabState extends State<HomeTab> {
 
   //|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*
   //|* ----------------------------------------- CLASS METHODS
+  void _updateDateTime() {
+    setState(() {
+      _currentDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+      _currentTime = DateFormat('HH:mm').format(DateTime.now());
+    });
+  }
 
   void _initializeCategoryOptions() async {
     // Parse the "categories.csv" file and update _categoriesOptions
@@ -175,9 +183,21 @@ class _HomeTabState extends State<HomeTab> {
   @override
   void initState() {
     super.initState();
+    _updateDateTime();
     _initializeBudgetOptions();
     _initializeCategoryOptions();
     _initializeSourcesOptions();
+
+    // Start a timer to update the date and time every minute
+    _timer = Timer.periodic(const Duration(seconds: 20), (timer) {
+      _updateDateTime();
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _timer.cancel();
   }
 
   //|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*
@@ -232,7 +252,7 @@ class _HomeTabState extends State<HomeTab> {
                         borderRadius: BorderRadius.zero,
                       ),
                     ),
-                    keyboardType: TextInputType.number,
+                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
                   ),
                 ),
                 Checkbox(
@@ -262,7 +282,11 @@ class _HomeTabState extends State<HomeTab> {
               onChanged: (value) {
                 setState(() {
                   _categoryValue = value.toString();
-                  _typeValue = _categoryMap[value.toString()]!.first;
+                  if (_categoryValue == "NaN") {
+                    _typeValue = '';
+                  } else {
+                    _typeValue = _categoryMap[value.toString()]!.first;
+                  }
                 });
               },
             ),

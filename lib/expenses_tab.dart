@@ -11,7 +11,7 @@
 // *   Alberto Bortoni                                                                         * //
 // *                                                                                           * //
 // * -- TODOS --                                                                               * //
-// *                                                                                           * //
+// *   Error handling is ass                                                                   * //
 // *                                                                                           * //
 // ~.~`~.~`~.~`~.~`~.~`~.~`~.~`~.~`~.~`~.~`~.~`~.~`~.~`~.~`~.~`~.~`~.~`~.~`~.~`~.~`~.~`~.~`~.~`~ //
 
@@ -60,11 +60,22 @@ class _ExpensesTabState extends State<ExpensesTab> {
       if (_isSelected[i]) {
         // Get the entry id from the corresponding index in _allEntries
         String? entryId = _allEntries?.entries.elementAt(i).key.toString();
+        String? source = _allEntries?.entries.elementAt(i).value['source'].toString();
+        double? amount =   _allEntries?.entries.elementAt(i).value['amount'];
+        
 
         // Call the deleteEntry function with the entryId
         if (entryId != null) {
           await DatabaseHelper().deleteExpense(entryId);
         }
+
+        // remunerate the money deleted to the source
+        if (source != null && amount != null ) {
+          amount = amount * -1; 
+          await DatabaseHelper().updateAccountSources(source, amount);
+        }
+        
+        
 
         // Remove the entry from _allEntries and _isSelected
         setState(() {

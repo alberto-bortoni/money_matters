@@ -4,10 +4,6 @@ Auto Maintenance,Auto
 Auto Parts,Auto
 Auto Payment,Auto
 Carwash,Auto
-Gasoline,Auto
-Coffee,Eating
-Meal,Eating
-Lunch,Eating
 Books,Education
 Courses,Education
 Concerts,Entretainment
@@ -23,15 +19,23 @@ Transfer Fee,Fees
 Gear,Fitness
 Gym,Fitness
 Spa,Fitness
-Convinience,Food
-Grocery,Food
+Coffee,Food
+Confection,Food
+Meal,Food
+Lunch,Food
 Other,Food
+Takeout,Food
+Convinience,Grocery
+Grocery,Grocery
+Other,Grocery
 Donate,Gifts
 Gift,Gifts
 Support,Gifts
 Furnishings,Home
 Home Improve,Home
 Home Maintenance,Home
+Household,Home
+Paraphernalia,Home
 Rent,Home
 Dentist,Medical
 Doctor,Medical
@@ -45,6 +49,7 @@ Shipping,Misc
 Year Expenses,Misc
 Bar,Outing
 Cover/Ticket,Outing
+Potluck,Outing
 Restaurant,Outing
 Other,Outing
 Audiobook,Services
@@ -60,6 +65,7 @@ Supplies,Shopping
 Tools,Shopping
 Federal Tax,Tax
 Other Tax,Tax
+Gasoline,Transport
 Parking,Transport
 Ride Share,Transport
 Taxi & Bus,Transport
