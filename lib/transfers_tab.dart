@@ -211,7 +211,7 @@ class _TransfersState extends State<TransfersTab> {
                   borderRadius: BorderRadius.zero,
                 ),
               ),
-              keyboardType: TextInputType.number,
+              keyboardType: const TextInputType.numberWithOptions(decimal: true),
             ),
             const SizedBox(height: 20.0),
             DropdownButtonFormField(
