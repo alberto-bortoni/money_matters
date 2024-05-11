@@ -29,7 +29,5 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-  - assets/budgets.csv
-  - assets/categories.csv
   - assets/valid_users.json
 

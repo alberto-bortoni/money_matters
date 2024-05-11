@@ -55,7 +55,7 @@ class _TransfersState extends State<TransfersTab> {
   //|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*
   //|* ----------------------------------------- CLASS METHODS
   void _initializeIncomesAndSourcesOptions() async {
-    // Parse the "budgets.csv" file and update _budgetOptions
+    // Get ghe sources and incomes
     List<String> incomes = await DatabaseHelper().getIcomesTypes();
     List<String> sources = await DatabaseHelper().getSourcesTypes();
 

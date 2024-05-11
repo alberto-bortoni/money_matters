@@ -18,7 +18,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'db_handler.dart';
-import 'main_util_functions.dart';
 import 'myapp_styles.dart';
 import 'dart:async';
 
@@ -71,19 +70,19 @@ class _HomeTabState extends State<HomeTab> {
   }
 
   void _initializeCategoryOptions() async {
-    // Parse the "categories.csv" file and update _categoriesOptions
-    _categoryMap = await parseCategoriesCSV();
+    // get the categories and parse the keys for the category fields
+    _categoryMap = await DatabaseHelper().getCategoriesTypes();
     List<String> uniqueCategories = _categoryMap.keys.toList();
 
     setState(() {
       _categoryOptions = uniqueCategories;
-      _categoryValue = _categoryOptions.first; // Set default value for budget to empty string
+      _categoryValue = _categoryOptions.first; // Set default value for category to empty string
     });
   }
 
   void _initializeBudgetOptions() async {
-    // Parse the "budgets.csv" file and update _budgetOptions
-    List<String> budgets = await parseBudgetsCSV();
+    List<String> budgets = await DatabaseHelper().getBudgetsTypes();
+
     setState(() {
       _budgetOptions = budgets;
       _budgetValue = _budgetOptions.first; // Set default value for budget to empty string

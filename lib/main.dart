@@ -32,10 +32,13 @@ import 'settings_tab.dart';
 import 'db_handler.dart';
 import 'expenses_tab.dart';
 import 'transfers_tab.dart';
-import 'main_util_functions.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'myapp_styles.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:convert';
 
 // ********************************************************************************************* //
 // *                                      MAIN APP CLASS                                       * //
@@ -43,7 +46,6 @@ import 'myapp_styles.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await copyDefaultFiles();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -52,6 +54,40 @@ void main() async {
   await DatabaseHelper().initialize();
 
   runApp(const MyApp());
+}
+
+//|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*
+//|* ----------------------------------------------- METHODS
+Future<void> useValidUserCredentials() async {
+  String jsonString = await rootBundle.loadString('assets/valid_users.json');
+  Map<String, dynamic> data = jsonDecode(jsonString);
+
+  List<dynamic> users = data['users'];
+
+  String email = users[0]['email'];
+  String password = users[0]['password'];
+
+  await initializeUserSignIn(email, password);
+}
+
+Future<void> initializeUserSignIn(String emailAddress, String password) async {
+  try {
+    //await FirebaseAuth.instance.signOut();
+    await FirebaseAuth.instance.signInWithEmailAndPassword(email: emailAddress, password: password);
+    if (kDebugMode) {
+      print('User signed in successfully!');
+    }
+  } on FirebaseAuthException catch (e) {
+    if (e.code == 'user-not-found') {
+      if (kDebugMode) {
+        print('Error signing in: ${e.message}');
+      }
+    }
+  } catch (e) {
+    if (kDebugMode) {
+      print('Error signing in: $e');
+    }
+  }
 }
 
 class MyApp extends StatelessWidget {

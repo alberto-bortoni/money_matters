@@ -18,7 +18,6 @@
 
 import 'package:flutter/material.dart';
 import 'db_handler.dart';
-import 'main_util_functions.dart';
 import 'myapp_styles.dart';
 
 // ********************************************************************************************* //
@@ -45,8 +44,8 @@ class _SummaryTabState extends State<SummaryTab> {
   //|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*
   //|* ----------------------------------------- CLASS METHODS
   Future<void> _initializeData() async {
-    _budgets = await parseBudgetsCSV();
-    _categories = await parseCategoriesCSV();
+    _budgets = await DatabaseHelper().getBudgetsTypes();
+    _categories = await DatabaseHelper().getCategoriesTypes();
     await _updateBudgetCategoryAccountAmounts();
 
     setState(() {});
@@ -66,8 +65,16 @@ class _SummaryTabState extends State<SummaryTab> {
         String budget = value['budget'];
         String category = value['category'];
         double amount = value['amount'].toDouble();
-        _budgetAmounts.update(budget, (value) => value + amount, ifAbsent: () => amount);
-        _categoryAmounts.update(category, (value) => value + amount, ifAbsent: () => amount);
+        if (_budgets.contains(budget)) {
+          _budgetAmounts.update(budget, (value) => value + amount, ifAbsent: () => amount);
+        } else {
+          _budgetAmounts.update('NaN', (value) => value + amount, ifAbsent: () => amount);
+        }
+        if (_categories.containsKey(category)) {
+          _categoryAmounts.update(category, (value) => value + amount, ifAbsent: () => amount);
+        } else {
+          _categoryAmounts.update('NaN', (value) => value + amount, ifAbsent: () => amount);
+        }
       });
     }
 

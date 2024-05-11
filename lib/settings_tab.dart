@@ -12,7 +12,10 @@
 // *   Alberto Bortoni                                                                         * //
 // *                                                                                           * //
 // * -- TODOS --                                                                               * //
-// *                                                                                           * //
+// *   - Bad error handling                                                                    * //
+// *   - To move files                                                                         * //
+// *        adb push .\junk\mods.csv /storage/emulated/0/Download/                             * //
+// *   - when updating expenses, the amount will not update the sources, dont use now          * //
 // *                                                                                           * //
 // ~.~`~.~`~.~`~.~`~.~`~.~`~.~`~.~`~.~`~.~`~.~`~.~`~.~`~.~`~.~`~.~`~.~`~.~`~.~`~.~`~.~`~.~`~.~`~ //
 
@@ -24,7 +27,6 @@ import 'package:path_provider/path_provider.dart';
 import 'myapp_styles.dart';
 import 'package:intl/intl.dart';
 import 'db_handler.dart';
-import 'package:universal_html/html.dart' as html;
 import 'dart:convert';
 
 // ********************************************************************************************* //
@@ -41,11 +43,8 @@ class SettingsTab extends StatefulWidget {
 class _SettingsTabState extends State<SettingsTab> {
   //|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*
   //|* --------------------------------------------- VARIABLES
-  String _selectedBudgetFileName = 'budgets.csv';
-  String _selectedCategoriesFileName = 'categories.csv';
   String _displayText = '';
   String _downloadDir = '';
-  String _appDocDir = '';
 
   //|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*
   //|* ----------------------------------------- CLASS METHODS
@@ -67,82 +66,113 @@ class _SettingsTabState extends State<SettingsTab> {
     }
   }
 
-  Future<void> _getApplicationDir() async {
-    if (!kIsWeb) {
-      Directory appDocDir = await getApplicationDocumentsDirectory();
-      _appDocDir = appDocDir.path;
-    }
-  }
-
-  void _browseBudgetFile() async {
+  Future<String> _browseExpenseChanges() async {
     FilePickerResult? result = await FilePicker.platform
         .pickFiles(type: FileType.custom, allowedExtensions: ['csv'], allowMultiple: false);
 
     if (result != null) {
-      File selectedFile;
+      Map<String, dynamic> changedExpenses = {};
 
       if (!kIsWeb) {
-        selectedFile = File(result.files.single.path!);
+        File selectedFile = File(result.files.single.path!);
 
-        // Delete existing budgets.csv file if it exists
-        File existingFile = File('$_appDocDir/budgets.csv');
-        if (await existingFile.exists()) {
-          await existingFile.delete();
+        try {
+          List<String> lines = await selectedFile.readAsLines();
+
+          // Skip the header row
+          if (lines.isNotEmpty) lines.removeAt(0);
+
+          for (String line in lines) {
+            List<String> values = line.split(',');
+
+            // Extract ID and create entry
+            String id = values[9]; // Assuming 'id' is the last column
+            Map<String, dynamic> entry = {
+              'date': values[0],
+              'time': values[1],
+              'description': values[2],
+              'amount': int.parse(values[3]),
+              'category': values[4],
+              'categoryType': values[5],
+              'budget': values[6],
+              'source': values[7],
+              'timestamp': int.parse(values[8]),
+            };
+
+            // Add entry to changedExpenses map
+            changedExpenses[id] = entry;
+          }
+        } catch (e) {
+          if (kDebugMode) {
+            print('Error reading CSV file: $e');
+          }
+          return 'There was an error parsing the file';
         }
 
-        // Copy the selected file to app's local storage
-        await selectedFile.copy('$_appDocDir/budgets.csv');
-      } else {
-        String budgetString = utf8.decode(result.files.single.bytes!);
-        html.window.localStorage['budgets'] = budgetString;
+        // Call updateTransactions
+        DatabaseHelper().updateTransactions(changedExpenses);
+        return 'Import successful';
       }
-
-      setState(() {
-        _selectedBudgetFileName = result.files.single.name; // Update selected budget file name
-      });
+      return 'No importing from web';
+    } else {
+      return 'Cant open that file';
     }
   }
 
-  void _browseCategoriesFile() async {
-    FilePickerResult? result = await FilePicker.platform
-        .pickFiles(type: FileType.custom, allowedExtensions: ['csv'], allowMultiple: false);
+  Future<void> _getBudgetsFile() async {
+    // Get the list of budgets keys
+    List<String> budgets = await DatabaseHelper().getBudgetsTypes();
+    budgets.remove('NaN');
 
-    if (result != null) {
-      File selectedFile;
-      if (!kIsWeb) {
-        selectedFile = File(result.files.single.path!);
+    // Create a map with keys from the list and null values
+    Map<String, dynamic> budgetsMap =
+        Map.fromIterable(budgets, key: (key) => key, value: (_) => null);
 
-        // Delete existing categories.csv file if it exists
-        File existingFile = File('$_appDocDir/categories.csv');
-        if (await existingFile.exists()) {
-          await existingFile.delete();
-        }
+    // Convert budgetsMap to JSON string
+    String budgetsJson = json.encode(budgetsMap);
 
-        // Copy the selected file to app's local storage
-        await selectedFile.copy('$_appDocDir/categories.csv');
-      } else {
-        String budgetString = utf8.decode(result.files.single.bytes!);
-        html.window.localStorage['categories'] = budgetString;
+    // Get directory to save the file
+    String filePath = '$_downloadDir/budgets.json';
+
+    // Save JSON string to file
+    try {
+      File file = File(filePath);
+      await file.writeAsString(budgetsJson);
+      if (kDebugMode) {
+        print('Budgets file saved at: $filePath');
       }
-
-      setState(() {
-        _selectedCategoriesFileName = result.files.single.name;
-      });
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error saving budgets file: $e');
+      }
     }
   }
 
-  void _getBudgetsFile() async {
-    File existingFile = File('$_appDocDir/budgets.csv');
+  Future<void> _getCategoriesFile() async {
+    Map<String, List<String>> categoriesMap = await DatabaseHelper().getCategoriesTypes();
 
+    // Remove the 'NaN' key if it exists
+    categoriesMap.removeWhere((key, value) => key == 'NaN');
+
+    // Convert categoriesMap to JSON string
+    String categoriesJson = json.encode(categoriesMap);
+
+    // Get directory to save the file
     String today = DateFormat('yyyyMMdd').format(DateTime.now());
-    await existingFile.copy('$_downloadDir/budgets-$today.csv');
-  }
+    String filePath = '$_downloadDir/categories-$today.json';
 
-  void _getCategoriesFile() async {
-    File existingFile = File('$_appDocDir/categories.csv');
-
-    String today = DateFormat('yyyyMMdd').format(DateTime.now());
-    await existingFile.copy('$_downloadDir/categories-$today.csv');
+    // Save JSON string to file
+    try {
+      File file = File(filePath);
+      await file.writeAsString(categoriesJson);
+      if (kDebugMode) {
+        print('Categories file saved at: $filePath');
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error saving categories file: $e');
+      }
+    }
   }
 
   void _getExpenseThisMonth() async {
@@ -285,9 +315,9 @@ class _SettingsTabState extends State<SettingsTab> {
     }
   }
 
-  void _changeText() {
+  void _changeText(String text) {
     setState(() {
-      _displayText = 'Donzo exporting!';
+      _displayText = text;
     });
 
     // Reset text to default after 3 seconds
@@ -304,7 +334,6 @@ class _SettingsTabState extends State<SettingsTab> {
   void initState() {
     super.initState();
     _getDownloadDir();
-    _getApplicationDir();
   }
 
   //|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*
@@ -318,53 +347,30 @@ class _SettingsTabState extends State<SettingsTab> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 10.0),
+            Text(
+              _displayText,
+              style: myTextStylePl,
+              textAlign: TextAlign.right,
+            ),
+            const SizedBox(height: 10.0),
             const Text(
-              'CONFIG FILES',
+              'IMPORTS',
               style: myTextStyle,
             ),
-            const SizedBox(height: 1.0),
-            const Text(
-              'Names will be re-written after app closes.',
-              style: myTextStylePlsm,
-            ),
             const SizedBox(height: 25.0),
-            Text(
-              'Budget file: $_selectedBudgetFileName',
-              style: myTextStylePl,
-            ),
-            const SizedBox(height: 16.0),
             ElevatedButton(
-              onPressed: _browseBudgetFile,
-              child: const Text('Browse Budgets'),
+              onPressed: kIsWeb
+                  ? null
+                  : () async {
+                      await _browseExpenseChanges();
+                      _changeText('Import successful');
+                    },
+              child: const Text('Browse Expense Change'),
             ),
-            const SizedBox(height: 32.0),
-            Text(
-              'Categories file: $_selectedCategoriesFileName',
-              style: myTextStylePl,
-            ),
-            const SizedBox(height: 16.0),
-            ElevatedButton(
-              onPressed: _browseCategoriesFile,
-              child: const Text('Browse Categories'),
-            ),
-            const SizedBox(height: 60.0),
-            Row(
-              children: [
-                const Expanded(
-                  child: Text(
-                    'EXPORTS',
-                    style: myTextStyle,
-                    textAlign: TextAlign.left,
-                  ),
-                ),
-                Expanded(
-                  child: Text(
-                    _displayText,
-                    style: myTextStylePl,
-                    textAlign: TextAlign.right,
-                  ),
-                ),
-              ],
+            const SizedBox(height: 50.0),
+            const Text(
+              'EXPORTS',
+              style: myTextStyle,
             ),
             const SizedBox(height: 20.0),
             ElevatedButton(
@@ -372,7 +378,7 @@ class _SettingsTabState extends State<SettingsTab> {
                   ? null
                   : () {
                       _getBudgetsFile();
-                      _changeText();
+                      _changeText('Donzo exporting!');
                     },
               child: const Text('File: Budgets'),
             ),
@@ -382,7 +388,7 @@ class _SettingsTabState extends State<SettingsTab> {
                   ? null
                   : () {
                       _getCategoriesFile();
-                      _changeText();
+                      _changeText('Donzo exporting!');
                     },
               child: const Text('File: Categories'),
             ),
@@ -392,7 +398,7 @@ class _SettingsTabState extends State<SettingsTab> {
                   ? null
                   : () {
                       _getExpenseThisMonth();
-                      _changeText();
+                      _changeText('Donzo exporting!');
                     },
               child: const Text('Expense: This month'),
             ),
@@ -402,7 +408,7 @@ class _SettingsTabState extends State<SettingsTab> {
                   ? null
                   : () {
                       _getExpenseLastMonth();
-                      _changeText();
+                      _changeText('Donzo exporting!');
                     },
               child: const Text('Expense: Last month'),
             ),
@@ -412,7 +418,7 @@ class _SettingsTabState extends State<SettingsTab> {
                   ? null
                   : () {
                       _getExpenseAll();
-                      _changeText();
+                      _changeText('Donzo exporting!');
                     },
               child: const Text('Expense: All entries'),
             ),
@@ -422,7 +428,7 @@ class _SettingsTabState extends State<SettingsTab> {
                   ? null
                   : () {
                       _getTransferAll();
-                      _changeText();
+                      _changeText('Donzo exporting!');
                     },
               child: const Text('Transactions: All entries'),
             ),

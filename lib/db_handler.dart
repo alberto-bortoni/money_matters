@@ -29,6 +29,8 @@ class DatabaseHelper {
   final DatabaseReference _databaseIncomes = FirebaseDatabase.instance.ref('incomes');
   final DatabaseReference _databaseSources = FirebaseDatabase.instance.ref('sources');
   final DatabaseReference _databaseTransfers = FirebaseDatabase.instance.ref('transfers');
+  final DatabaseReference _databaseCategories = FirebaseDatabase.instance.ref('categories');
+  final DatabaseReference _databaseBudgets = FirebaseDatabase.instance.ref('budgets');
 
   //|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*|*
   //|* ----------------------------------------- CLASS METHODS
@@ -37,6 +39,8 @@ class DatabaseHelper {
     _databaseIncomes.keepSynced(true);
     _databaseSources.keepSynced(true);
     _databaseTransfers.keepSynced(true);
+    _databaseCategories.keepSynced(true);
+    _databaseBudgets.keepSynced(true);
   }
 
   Future<void> insertExpnese(Map<String, dynamic> entry) async {
@@ -86,6 +90,17 @@ class DatabaseHelper {
       double newVal = currentVal + amount;
 
       await _databaseSources.update({source: newVal});
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error inserting transfer entry: $e');
+      }
+      rethrow;
+    }
+  }
+
+  Future<void> updateTransactions(Map<String, dynamic> transactions) async {
+    try {
+      await _databaseExpenses.update(transactions);
     } catch (e) {
       if (kDebugMode) {
         print('Error inserting transfer entry: $e');
@@ -195,6 +210,59 @@ class DatabaseHelper {
     }
 
     return incomesList;
+  }
+
+  Future<Map<String, List<String>>> getCategoriesTypes() async {
+    Map<String, List<String>> categoriesMap = {};
+    categoriesMap['NaN'] = [];
+
+    try {
+      final snapshot = await _databaseCategories.get();
+      Map<dynamic, dynamic>? categories = snapshot.value as dynamic;
+
+      if (categories != null) {
+        List<String> categoriesList = categories.keys.cast<String>().toList()..sort();
+
+        for (String key in categoriesList) {
+          categoriesMap[key] = List<String>.from(categories[key])..sort();
+        }
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error getting category types: $e');
+      }
+    }
+
+    // Append an empty string at the start of each list except for the "NaN" key
+    categoriesMap.forEach((key, value) {
+      if (key != 'NaN') {
+        value.insert(0, '');
+      }
+    });
+
+    return categoriesMap;
+  }
+
+  Future<List<String>> getBudgetsTypes() async {
+    List<String> budgetsList = [];
+
+    try {
+      final snapshot = await _databaseBudgets.get();
+      Map<dynamic, dynamic>? budgets = snapshot.value as dynamic;
+
+      if (budgets != null) {
+        budgetsList = budgets.keys.cast<String>().toList();
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error getting budget types: $e');
+      }
+    }
+
+    // Add an empty string at the beginning of the list
+    budgetsList.insert(0, 'NaN');
+
+    return budgetsList;
   }
 
   Future<List<String>> getSourcesTypes() async {
