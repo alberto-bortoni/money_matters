@@ -83,7 +83,18 @@ class _SettingsTabState extends State<SettingsTab> {
           if (lines.isNotEmpty) lines.removeAt(0);
 
           for (String line in lines) {
+            // Check for empty lines
+            if (line.trim().isEmpty) {
+              continue;
+            }
             List<String> values = line.split(',');
+
+            // Ensure line has exactly 10 columns
+            if (values.length != 10) {
+              // Log or handle lines with incorrect column count
+              print('Skipping line due to incorrect column count: $line');
+              continue;
+            }
 
             // Extract ID and create entry
             String id = values[9]; // Assuming 'id' is the last column
@@ -91,7 +102,7 @@ class _SettingsTabState extends State<SettingsTab> {
               'date': values[0],
               'time': values[1],
               'description': values[2],
-              'amount': int.parse(values[3]),
+              'amount': double.parse(values[3]),
               'category': values[4],
               'categoryType': values[5],
               'budget': values[6],

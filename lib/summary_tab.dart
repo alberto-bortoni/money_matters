@@ -70,6 +70,7 @@ class _SummaryTabState extends State<SummaryTab> {
         } else {
           _budgetAmounts.update('NaN', (value) => value + amount, ifAbsent: () => amount);
         }
+        
         if (_categories.containsKey(category)) {
           _categoryAmounts.update(category, (value) => value + amount, ifAbsent: () => amount);
         } else {

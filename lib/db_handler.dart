@@ -78,7 +78,7 @@ class DatabaseHelper {
 
   Future<void> updateAccountSources(String source, double amount) async {
     try {
-      final snapshot = await _databaseSources.child(source).get();
+      final snapshot = await _databaseSources.child('$source/balance').get();
 
       double currentVal;
       if (snapshot.value is int) {
@@ -89,7 +89,7 @@ class DatabaseHelper {
 
       double newVal = currentVal + amount;
 
-      await _databaseSources.update({source: newVal});
+      await _databaseSources.update({'$source/balance': newVal});
     } catch (e) {
       if (kDebugMode) {
         print('Error inserting transfer entry: $e');
@@ -201,7 +201,7 @@ class DatabaseHelper {
       Map<dynamic, dynamic>? incomes = snapshot.value as dynamic;
 
       if (incomes != null) {
-        incomesList = incomes.keys.cast<String>().toList();
+        incomesList = incomes.keys.cast<String>().toList()..sort();
       }
     } catch (e) {
       if (kDebugMode) {
@@ -251,7 +251,7 @@ class DatabaseHelper {
       Map<dynamic, dynamic>? budgets = snapshot.value as dynamic;
 
       if (budgets != null) {
-        budgetsList = budgets.keys.cast<String>().toList();
+        budgetsList = budgets.keys.cast<String>().toList()..sort();
       }
     } catch (e) {
       if (kDebugMode) {
@@ -265,15 +265,28 @@ class DatabaseHelper {
     return budgetsList;
   }
 
-  Future<List<String>> getSourcesTypes() async {
-    List<String> sourcesList = [''];
+  Future<List<String>> getSourcesTypes(bool isexpense) async {
+    List<String> sourcesList = [];
 
     try {
       final snapshot = await _databaseSources.get();
-      Map<dynamic, dynamic>? sources = snapshot.value as dynamic;
+      Map<dynamic, dynamic>? sources = snapshot.value as Map<dynamic, dynamic>?;
 
       if (sources != null) {
-        sourcesList = sources.keys.cast<String>().toList();
+        sources.forEach((key, value) {
+          if (isexpense) {
+            // If 'isexpense' is true, include sources with 'expense' set to true
+            if (value['expense'] == true) {
+              sourcesList.add(key.toString());
+            }
+          } else {
+            // If 'isexpense' is false, include all sources
+            sourcesList.add(key.toString());
+          }
+        });
+
+        // Sort the list of sources alphabetically
+        sourcesList.sort();
       }
     } catch (e) {
       if (kDebugMode) {
@@ -292,11 +305,12 @@ class DatabaseHelper {
       Map<dynamic, dynamic>? sources = snapshot.value as dynamic;
 
       if (sources != null) {
-        sources.forEach((key, value) {
-          if (key is String && value is num) {
-            sourcesAmounts[key] = value.toDouble();
-          }
-        });
+        List<String> sourcesList = sources.keys.cast<String>().toList()..sort();
+
+        for (String key in sourcesList) {
+            double balance = (sources[key]!['balance'] as num?)?.toDouble() ?? 0.0;
+            sourcesAmounts[key] = balance;
+        }
       }
     } catch (e) {
       if (kDebugMode) {

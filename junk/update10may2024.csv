@@ -1,0 +1,43 @@
+﻿date,time,description,amount,category,categoryType,budget,source,timestamp,id
+2024-05-09,17:37,ikari platicos,-540,Home,Home Improve,Discretionary,B-nuCredit,202405091737,-NxUhxON_LH2o7FB7ZOw
+2024-05-09,17:37,estacionamienyo dude,-12,Transport,Parking,Discretionary,B-cash,202405091737,-NxUi1Qc0wdEyPGI4Shx
+2024-05-09,17:36,maxichina casa,-1053.5,Home,Home Improve,Discretionary,B-nuCredit,202405091736,-NxUhrKzYPPc1rilCZkL
+2024-05-09,13:38,deletedlete,2,Grocery,Convenience,Mothball,M-cash,202405091338,-NxTrGQ9U6plYu96eg_j
+2024-05-08,14:28,delte test,0,Food,Coffee,Mothball,B-cash,202405081428,-NxOtLafDPaEkBvpY2KQ
+2024-05-07,17:06,lefties san agustin,-1410,Shopping,Clothes,Discretionary,B-nuCredit,202405071706,-NxKIjPgk55AwumZ5-XY
+2024-05-07,17:05,hnm fashon drice,-1238,Shopping,Clothes,Discretionary,B-nuCredit,202405071705,-NxKIaM1n7NCTszUD3rl
+2024-05-07,17:05,pull and bear san agus,-798,Shopping,Clothes,Discretionary,B-nuCredit,202405071705,-NxKIUOvW7y5OjRCdp2o
+2024-05-06,18:49,dlores sofi,-345.5,Gifts,Gift,Personal BM,B-nuCredit,202405061849,-NxFWica0Badhyite4hJ
+2024-05-04,11:00,anaquelito,-2067.5,Home,Home Improve,Discretionary,B-nuCredit,202405041100,-Nx3YExX_sMYuENDfWsX
+2024-05-03,15:08,anaqueles,-3181,Home,Home Improve,Discretionary,B-nuCredit,202405031508,-Nx-HMI1lK9H4LjUJU1M
+2024-05-01,20:34,walmart pirata,-238,Grocery,Grocery,Personal M,M-cash,202405012034,-Nwr8mRbKFFtTREZqG3k
+2024-04-30,18:05,hypotesis payasito san juanita,-228,Gifts,Gift,Personal BM,M-cash,202404301805,-NwlT7tlj91cxbdHHdpB
+2024-04-29,18:44,park galerias,-45,Transport,Parking,Discretionary,B-cash,202404291844,-NwgSVb845krAoioKQ_y
+2024-04-28,21:21,sushi M,-138.3,Food,Takeout,Personal BM,B-nuCredit,202404282121,-Nwbrm8O_whuS_aN4Fyv
+2024-04-27,16:32,himedepot,-1305.8,Home,Home Improve,Discretionary,B-nuCredit,202404271632,-NwWfzfjWxdSYMkfR-jP
+2024-04-25,11:01,casetas tag TX [Austin],-986,Transport,Tolls,Term,M-cash,202404251101,-NwLCBSN3p3PCunH2R4K
+2024-04-22,12:10,snax max concert food [Austin],-626.17,Shopping,Personal,Term,B-bnrgDebit,202404221210,-e87d10707d8b444086d6
+2024-04-22,11:24,gsoline shell [Austin],-365.24,Auto,Gasoline,Term,B-nuCredit,202404221124,-a1f015413cf54023bb93
+2024-04-22,11:24,book people [Austin],-316.53,Education,Books,Term,B-nuCredit,202404221124,-c4406181e1a647a1a9e3
+2024-04-22,11:24,coffee [Austin],-197,Food,Coffee,Term,B-nuCredit,202404221124,-ad80218b8c324c1187ef
+2024-04-22,11:24,trader joes [Austin],-540.46,Grocery,Grocery,Term,B-nuCredit,202404221124,-897abcf5061d4f66a713
+2024-04-22,11:24,heb austin [Austin],-870.41,Grocery,Grocery,Term,B-nuCredit,202404221124,-125a0dd8d98a40dfb457
+2024-04-22,11:24,beers at concert [Austin],-505.69,Outing,Bar,Term,B-nuCredit,202404221124,-a3e48d88013641d2bc99
+2024-04-22,11:24,botanical garden [Austin],-205.37,Outing,Cover/Ticket,Term,B-nuCredit,202404221124,-ae723dba083a4398be2e
+2024-04-22,11:24,moody amph food [Austin],-505.69,Outing,Other,Term,B-nuCredit,202404221124,-f6523faea6804dea8e67
+2024-04-22,11:24,amazon prime,-99,Services,Other,Fixed,B-nuCredit,202404221124,-fdad491ca9e6442e84d4
+2024-04-22,11:24,five below punchos and else [Austin],-358.01,Shopping,Personal,Term,B-nuCredit,202404221124,-b405dd7d456f4cb5986f
+2024-04-22,11:24,lush bath bombs [Austin],-344.93,Shopping,Personal,Term,B-nuCredit,202404221124,-72bcdabd40f34798a5ef
+2024-04-22,11:24,concert parking [Austin],-344.24,Transport,Parking,Term,B-nuCredit,202404221124,-d917f2145bea4384a8fb
+2024-04-22,11:24,puente to usa [Austin],-205.37,Transport,Tolls,Term,B-nuCredit,202404221124,-aa60e3c286b0424ca6db
+2024-04-22,11:24,puente cobro caseta [Austin],-32,Transport,Tolls,Term,B-nuCredit,202404221124,-0640659943d6463fb9b0
+2024-04-22,11:24,wendys [Austin],-417.05,Travel,In-motion Expense,Term,B-nuCredit,202404221124,-6c7e3688a85346cb9191
+2024-04-22,11:24,oxxo carretera snack [Austin],-119.75,Travel,In-motion Expense,Term,B-nuCredit,202404221124,-0931aedbabda4d399889
+2024-04-20,16:44,wendys tx [Austin],-380,Travel,In-motion Expense,Term,M-cash,202404201644,-41b40fbf22384dea948e
+2024-04-15,19:30,trole,-135,Food,Confection,Personal B,B-cash,202404151930,-9c40c29f3944433795ea
+2024-04-11,21:03,la regia,-135,Food,Confection,Personal B,M-cash,202404112103,-09d0942027de4703a59b
+2024-04-11,11:40,enchiladas,-150,Food,Lunch,Fixed,M-cash,202404111140,-f3ea88bce5e34358a13c
+2024-04-10,09:36,elote tocumbo,-110,Food,Confection,Personal BM,B-bnrgDebit,202404100936,-6b2c666caa684e40bb64
+2024-04-05,12:06,renta M,-9500,Home,Rent,Fixed,B-cash,202404051206,-117003c075354a8fa534
+2024-04-05,11:49,amazon prime M,-99,Services,Other,Fixed,M-cash,202404051149,-9f51b3311d9142028070
+2024-04-05,11:49,servicios M,-1000,Utilities,Electric,Fixed,M-cash,202404051149,-b2b68c4c64fe4c248528

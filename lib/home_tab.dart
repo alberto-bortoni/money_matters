@@ -90,7 +90,7 @@ class _HomeTabState extends State<HomeTab> {
   }
 
   void _initializeSourcesOptions() async {
-    List<String> sources = await DatabaseHelper().getSourcesTypes();
+    List<String> sources = await DatabaseHelper().getSourcesTypes(true);
     setState(() {
       _sourcesOptions = ['NaN'] + sources;
       _selectedSource = _sourcesOptions.first;

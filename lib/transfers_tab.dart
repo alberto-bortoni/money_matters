@@ -57,7 +57,7 @@ class _TransfersState extends State<TransfersTab> {
   void _initializeIncomesAndSourcesOptions() async {
     // Get ghe sources and incomes
     List<String> incomes = await DatabaseHelper().getIcomesTypes();
-    List<String> sources = await DatabaseHelper().getSourcesTypes();
+    List<String> sources = await DatabaseHelper().getSourcesTypes(false);
 
     setState(() {
       _sourcesOptions = sources;

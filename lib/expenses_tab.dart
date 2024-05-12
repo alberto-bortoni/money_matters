@@ -61,7 +61,7 @@ class _ExpensesTabState extends State<ExpensesTab> {
         // Get the entry id from the corresponding index in _allEntries
         String? entryId = _allEntries?.entries.elementAt(i).key.toString();
         String? source = _allEntries?.entries.elementAt(i).value['source'].toString();
-        double? amount =   _allEntries?.entries.elementAt(i).value['amount'];
+        double? amount =   _allEntries?.entries.elementAt(i).value['amount'].toDouble();
         
 
         // Call the deleteEntry function with the entryId
